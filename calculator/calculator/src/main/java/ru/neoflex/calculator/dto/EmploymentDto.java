@@ -1,0 +1,15 @@
+package ru.neoflex.calculator.dto;
+
+import ru.neoflex.calculator.enums.EmploymentStatus;
+import ru.neoflex.calculator.enums.Position;
+
+import java.math.BigDecimal;
+
+public class EmploymentDto {
+    private EmploymentStatus employmentStatus;
+    private String employerINN;
+    private BigDecimal salary;
+    private Position position;
+    private Integer workExperienceTotal;
+    private Integer workExperienceCurrent;
+}
