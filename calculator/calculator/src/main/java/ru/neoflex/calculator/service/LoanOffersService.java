@@ -1,9 +1,11 @@
 package ru.neoflex.calculator.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.neoflex.calculator.config.CreditProperties;
 import ru.neoflex.calculator.dto.LoanOfferDto;
 import ru.neoflex.calculator.dto.LoanStatementRequestDto;
+import ru.neoflex.calculator.util.CreditUtil;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -13,17 +15,18 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class LoanOffersService {
 
-    @Value("${credit.base-rate}")
-    private BigDecimal baseRate;
-
-    @Value("${credit.insurance-cost}")
-    private BigDecimal insuranceCost;
+    private final CreditProperties creditProperties;
 
     public List<LoanOfferDto> createOffers(LoanStatementRequestDto request) {
 
-        UUID statementId = UUID.randomUUID();
+        UUID statementId = UUID.randomUUID(); // чета сделать с этим
+
+        BigDecimal baseRate = creditProperties.getCalculator().getBaseRate();
+        BigDecimal insuranceCost = creditProperties.getCalculator().getInsuranceCost();
+
         List<LoanOfferDto> offers = new ArrayList<>();
 
         for (boolean isInsuranceEnabled : List.of(false, true)) {
@@ -41,7 +44,7 @@ public class LoanOffersService {
                     rate = rate.subtract(BigDecimal.valueOf(0.01));
                 }
 
-                BigDecimal monthlyPayment = calculateMonthlyPayment(
+                BigDecimal monthlyPayment = CreditUtil.calculateMonthlyPayment(
                         totalAmount,
                         rate,
                         request.getTerm()
@@ -67,15 +70,5 @@ public class LoanOffersService {
         return offers;
     }
 
-    private BigDecimal calculateMonthlyPayment(BigDecimal amount, BigDecimal rate, Integer term) {
 
-        double monthlyRate = rate.divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP).doubleValue();
-
-        double numerator = monthlyRate * Math.pow(1 + monthlyRate, term);
-        double denominator = Math.pow(1 + monthlyRate, term) - 1;
-
-        double payment = amount.doubleValue() * (numerator / denominator);
-
-        return BigDecimal.valueOf(payment).setScale(2, RoundingMode.HALF_UP);
-    }
 }

@@ -1,6 +1,8 @@
 package ru.neoflex.calculator.dto;
 
 import jakarta.validation.constraints.*;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import ru.neoflex.calculator.validation.annotation.Adult;
@@ -8,8 +10,8 @@ import ru.neoflex.calculator.validation.annotation.Adult;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
+@Builder
 public class LoanStatementRequestDto {
 
     @NotNull(message = "Amount is required")

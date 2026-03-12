@@ -1,11 +1,15 @@
 package ru.neoflex.calculator.dto;
 
+import lombok.Builder;
+import lombok.Data;
 import ru.neoflex.calculator.enums.Gender;
 import ru.neoflex.calculator.enums.MaritalStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Data
+@Builder
 public class ScoringDataDto {
     private BigDecimal amount;
     private Integer term;

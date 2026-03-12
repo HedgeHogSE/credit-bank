@@ -1,14 +1,14 @@
 package ru.neoflex.calculator.dto;
 
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
-@Setter
-@Getter
+@Data
 @Builder
 public class LoanOfferDto {
     private UUID statementId;
