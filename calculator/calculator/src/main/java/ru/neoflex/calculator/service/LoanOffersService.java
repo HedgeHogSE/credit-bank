@@ -1,14 +1,16 @@
 package ru.neoflex.calculator.service;
 
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import ru.neoflex.calculator.config.CreditProperties;
 import ru.neoflex.calculator.dto.LoanOfferDto;
 import ru.neoflex.calculator.dto.LoanStatementRequestDto;
+import ru.neoflex.calculator.generator.DefaultUuidGenerator;
 import ru.neoflex.calculator.util.CreditUtil;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -18,14 +20,20 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class LoanOffersService {
 
+    private final static Logger log = LoggerFactory.getLogger(LoanOffersService.class);
+
     private final CreditProperties creditProperties;
 
-    public List<LoanOfferDto> createOffers(LoanStatementRequestDto request) {
+    private final DefaultUuidGenerator uuidGenerator;
 
-        UUID statementId = UUID.randomUUID(); // чета сделать с этим
+    public List<LoanOfferDto> getOffers(LoanStatementRequestDto request) {
 
-        BigDecimal baseRate = creditProperties.getCalculator().getBaseRate();
-        BigDecimal insuranceCost = creditProperties.getCalculator().getInsuranceCost();
+        log.info("Getting loan offers");
+
+        UUID statementId = uuidGenerator.generate();
+
+        BigDecimal baseRate = creditProperties.getCalculator().baseRate();
+        BigDecimal insuranceCost = creditProperties.getCalculator().insuranceCost();
 
         List<LoanOfferDto> offers = new ArrayList<>();
 
@@ -69,6 +77,4 @@ public class LoanOffersService {
 
         return offers;
     }
-
-
 }

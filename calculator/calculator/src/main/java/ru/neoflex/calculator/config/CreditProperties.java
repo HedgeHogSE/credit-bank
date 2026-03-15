@@ -1,24 +1,19 @@
 package ru.neoflex.calculator.config;
 
 import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Getter
-@Setter
+@RequiredArgsConstructor
 @ConfigurationProperties(prefix = "credit")
-@Component
 public class CreditProperties {
 
-    private Calculator calculator = new Calculator();
+    private final Calculator calculator;
 
-    @Getter
-    @Setter
-    public static class Calculator {
-        private BigDecimal baseRate;
-        private BigDecimal insuranceCost;
-    }
+    public record Calculator(
+            BigDecimal baseRate,
+            BigDecimal insuranceCost) {}
 }
