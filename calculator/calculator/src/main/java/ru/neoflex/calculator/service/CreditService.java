@@ -1,6 +1,7 @@
 package ru.neoflex.calculator.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,48 +29,51 @@ import static java.time.LocalDate.now;
 import static ru.neoflex.calculator.util.CreditUtil.getPaymentScheduleElements;
 import static ru.neoflex.calculator.util.CreditUtil.getPsk;
 
-
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class CreditService {
 
-    private final static Logger log = LoggerFactory.getLogger(CreditService.class);
+        private final CreditProperties creditProperties;
 
-    private final CreditProperties creditProperties;
+        private final ScoringService scoringService;
 
-    private final ScoringService scoringService;
+        private final DateNowGenerator dateNowGenerator;
 
-    private final DateNowGenerator dateNowGenerator;
+        public CreditDto getCredit(ScoringDataDto scoringDataDto) {
 
-    public CreditDto getCredit(ScoringDataDto scoringDataDto) {
+                log.info("Calculating credit parameters for amount: {}, term: {}", scoringDataDto.getAmount(),
+                                scoringDataDto.getTerm());
 
-        log.info("Getting credit");
+                BigDecimal rate = scoringService.scoring(scoringDataDto);
 
-        BigDecimal rate = scoringService.scoring(scoringDataDto);
+                BigDecimal amount = scoringDataDto.getIsInsuranceEnabled()
+                                ? scoringDataDto.getAmount().add(creditProperties.getCalculator().insuranceCost())
+                                : scoringDataDto.getAmount();
 
-        BigDecimal amount = scoringDataDto.getIsInsuranceEnabled() ?
-                scoringDataDto.getAmount().add(creditProperties.getCalculator().insuranceCost()) :
-                scoringDataDto.getAmount();
+                BigDecimal monthlyPayment = CreditUtil.calculateMonthlyPayment(
+                                amount, rate, scoringDataDto.getTerm());
 
-        BigDecimal monthlyPayment = CreditUtil.calculateMonthlyPayment(
-                amount, rate, scoringDataDto.getTerm());
+                List<PaymentScheduleElementDto> paymentScheduleElements = getPaymentScheduleElements(amount,
+                                monthlyPayment, rate, scoringDataDto.getTerm(), dateNowGenerator.generate());
 
-        List<PaymentScheduleElementDto> paymentScheduleElements =
-                getPaymentScheduleElements(amount, monthlyPayment, rate, scoringDataDto.getTerm(), dateNowGenerator.generate());
+                BigDecimal psk = getPsk(scoringDataDto.getTerm(), amount, monthlyPayment);
 
-        BigDecimal psk = getPsk(scoringDataDto.getTerm(), amount, monthlyPayment);
+                log.debug("Intermediate calculation step: rate={}, amount={}, monthlyPayment={}, psk={}", rate, amount,
+                                monthlyPayment, psk);
 
-        return CreditDto
-                .builder()
-                .amount(amount)
-                .term(scoringDataDto.getTerm())
-                .monthlyPayment(monthlyPayment)
-                .rate(rate)
-                .psk(psk)
-                .isInsuranceEnabled(scoringDataDto.getIsInsuranceEnabled())
-                .isSalaryClient(scoringDataDto.getIsSalaryClient())
-                .paymentSchedule(paymentScheduleElements)
-                .build();
-    }
+                log.info("Credit calculation finished successfully. Returning CreditDto.");
+                return CreditDto
+                                .builder()
+                                .amount(amount)
+                                .term(scoringDataDto.getTerm())
+                                .monthlyPayment(monthlyPayment)
+                                .rate(rate)
+                                .psk(psk)
+                                .isInsuranceEnabled(scoringDataDto.getIsInsuranceEnabled())
+                                .isSalaryClient(scoringDataDto.getIsSalaryClient())
+                                .paymentSchedule(paymentScheduleElements)
+                                .build();
+        }
 
 }

@@ -1,9 +1,8 @@
 package ru.neoflex.calculator.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,9 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 
 @RestControllerAdvice
+@Slf4j
 public class GlobalExceptionHandler {
-
-    private final static Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(ScoringException.class)
     public ResponseEntity<ErrorResponse> handleScoringException(ScoringException ex) {
@@ -41,8 +39,6 @@ public class GlobalExceptionHandler {
                 }
                 )
                 .toList();
-
-        //log.error("Validation exception: {}", ex.getMessage(), ex);
 
         return ResponseEntity
                 .badRequest()

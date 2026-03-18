@@ -1,6 +1,7 @@
 package ru.neoflex.calculator.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -19,9 +20,8 @@ import java.time.Period;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ScoringService {
-
-    private final static Logger log = LoggerFactory.getLogger(ScoringService.class);
 
     private final CreditProperties creditProperties;
 
@@ -29,7 +29,7 @@ public class ScoringService {
 
     public BigDecimal scoring(ScoringDataDto scoringDataDto) {
 
-        log.info("Data scoring is in progress");
+        log.info("Scoring started for user {} {}", scoringDataDto.getFirstName(), scoringDataDto.getLastName());
 
         BigDecimal rate = creditProperties.getCalculator().baseRate();
 
@@ -53,9 +53,9 @@ public class ScoringService {
 
         if (UtilBigDecimal.isGreaterThan(
                 scoringDataDto.getAmount(),
-                scoringDataDto.getEmployment().getSalary().multiply(BigDecimal.valueOf(24)))
-        ) {
-            throw new ScoringException("Refusal! Loans are not be issued if 24 times your salary is less than the loan amount.");
+                scoringDataDto.getEmployment().getSalary().multiply(BigDecimal.valueOf(24)))) {
+            throw new ScoringException(
+                    "Refusal! Loans are not be issued if 24 times your salary is less than the loan amount.");
         }
 
         if (scoringDataDto.getMaritalStatus() == MaritalStatus.MARRIED) {
@@ -71,7 +71,8 @@ public class ScoringService {
         int age = Period.between(scoringDataDto.getBirthdate(), dateNowGenerator.generate()).getYears();
 
         if (age < 20 || age > 65) {
-            throw new ScoringException("Refusal! Loans are not issued to individuals under 20 or over 65 years of age.");
+            throw new ScoringException(
+                    "Refusal! Loans are not issued to individuals under 20 or over 65 years of age.");
         }
 
         if (scoringDataDto.getGender() == Gender.FEMALE && (age >= 32 && age <= 60)) {
@@ -81,11 +82,11 @@ public class ScoringService {
             rate = rate.subtract(BigDecimal.valueOf(0.03));
         }
 
-        if (scoringDataDto.getEmployment().getWorkExperienceTotal() < 18 || scoringDataDto.getEmployment().getWorkExperienceCurrent() < 3) {
+        if (scoringDataDto.getEmployment().getWorkExperienceTotal() < 18
+                || scoringDataDto.getEmployment().getWorkExperienceCurrent() < 3) {
             throw new ScoringException("""
                     Refusal! Loans are not issued to individuals with less than 18 months of total \
-                    employment history or less than 3 months of current employment history."""
-            );
+                    employment history or less than 3 months of current employment history.""");
         }
 
         if (scoringDataDto.getIsInsuranceEnabled()) {
@@ -95,6 +96,7 @@ public class ScoringService {
             rate = rate.subtract(BigDecimal.valueOf(0.01));
         }
 
+        log.info("Scoring completed successfully. Final calculated rate is {}", rate);
         return rate;
     }
 }

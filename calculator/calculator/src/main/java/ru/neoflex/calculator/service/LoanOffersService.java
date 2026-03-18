@@ -1,6 +1,7 @@
 package ru.neoflex.calculator.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,8 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class LoanOffersService {
-
-    private final static Logger log = LoggerFactory.getLogger(LoanOffersService.class);
 
     private final CreditProperties creditProperties;
 
@@ -28,7 +28,7 @@ public class LoanOffersService {
 
     public List<LoanOfferDto> getOffers(LoanStatementRequestDto request) {
 
-        log.info("Getting loan offers");
+        log.info("Generating loan offers for amount: {}, term: {}", request.getAmount(), request.getTerm());
 
         UUID statementId = uuidGenerator.generate();
 
@@ -55,8 +55,7 @@ public class LoanOffersService {
                 BigDecimal monthlyPayment = CreditUtil.calculateMonthlyPayment(
                         totalAmount,
                         rate,
-                        request.getTerm()
-                );
+                        request.getTerm());
 
                 LoanOfferDto offer = LoanOfferDto.builder()
                         .statementId(statementId)
@@ -69,11 +68,16 @@ public class LoanOffersService {
                         .isSalaryClient(isSalaryClient)
                         .build();
 
+                log.debug(
+                        "Generated offer: rate={}, totalAmount={}, monthlyPayment={}, isInsuranceEnabled={}, isSalaryClient={}",
+                        rate, totalAmount, monthlyPayment, isInsuranceEnabled, isSalaryClient);
+
                 offers.add(offer);
             }
         }
 
         offers.sort(Comparator.comparing(LoanOfferDto::getRate));
+        log.info("Generated {} loan offers successfully.", offers.size());
 
         return offers;
     }

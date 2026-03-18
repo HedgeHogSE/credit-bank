@@ -1,9 +1,14 @@
 package ru.neoflex.calculator.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,34 +23,44 @@ import ru.neoflex.calculator.service.LoanOffersService;
 
 import java.util.List;
 
+@Tag(name = "Калькулятор", description = "Расчет кредитных операций")
 @RestController
 @RequestMapping("/calculator")
 @RequiredArgsConstructor
+@Slf4j
 public class CalculatorController {
-
-    private static final Logger log =
-            LoggerFactory.getLogger(CalculatorController.class);
 
     private final LoanOffersService loanOffersService;
     private final CreditService creditService;
 
+    @Operation(summary = "Расчёт возможных условий кредита (прескоринг)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешный расчет предложений"),
+            @ApiResponse(responseCode = "400", description = "Невалидные данные запроса")
+    })
     @PostMapping("/offers")
-    public ResponseEntity<List<LoanOfferDto>> getLoanOffers(@RequestBody @Valid LoanStatementRequestDto loanStatementRequestDto) {
+    public ResponseEntity<List<LoanOfferDto>> getLoanOffers(
+            @RequestBody @Valid LoanStatementRequestDto loanStatementRequestDto) {
 
-        log.info("Request: POST /calculator/offers");
+        log.info("Request: POST /calculator/offers, data: {}", loanStatementRequestDto);
+        List<LoanOfferDto> offers = loanOffersService.getOffers(loanStatementRequestDto);
+        log.info("Response: POST /calculator/offers, count: {}", offers.size());
 
-        return ResponseEntity.ok(
-                loanOffersService.getOffers(loanStatementRequestDto)
-        );
+        return ResponseEntity.ok(offers);
     }
 
+    @Operation(summary = "Полный расчёт параметров кредита (скоринг)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешный расчет параметров кредита"),
+            @ApiResponse(responseCode = "400", description = "Отказ по скорингу или невалидные данные")
+    })
     @PostMapping("/calc")
     public ResponseEntity<CreditDto> getCredit(@RequestBody @Valid ScoringDataDto scoringDataDto) {
 
-        log.info("Request: POST /calculator/calc");
+        log.info("Request: POST /calculator/calc, data: {}", scoringDataDto);
+        CreditDto credit = creditService.getCredit(scoringDataDto);
+        log.info("Response: POST /calculator/calc, credit amount: {}, psk: {}", credit.getAmount(), credit.getPsk());
 
-        return ResponseEntity.ok(
-                creditService.getCredit(scoringDataDto)
-        );
+        return ResponseEntity.ok(credit);
     }
 }
