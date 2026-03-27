@@ -1,9 +1,9 @@
-package ru.neoflex.deal.dto;
+package ru.neoflex.deal.controller.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.deal.json.PaymentSchedule;
+import ru.neoflex.deal.model.PaymentSchedule;
 
 import java.math.BigDecimal;
 import java.util.List;

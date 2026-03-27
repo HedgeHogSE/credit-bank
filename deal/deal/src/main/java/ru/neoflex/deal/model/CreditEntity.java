@@ -1,7 +1,6 @@
-package ru.neoflex.deal.entity;
+package ru.neoflex.deal.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,7 +8,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import ru.neoflex.deal.enums.CreditStatus;
-import ru.neoflex.deal.json.PaymentSchedule;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,7 +19,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Credit {
+public class CreditEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "credit_id")

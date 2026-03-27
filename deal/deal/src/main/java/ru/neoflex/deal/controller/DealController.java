@@ -3,17 +3,21 @@ package ru.neoflex.deal.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestClient;
-import ru.neoflex.deal.dto.*;
-import ru.neoflex.deal.entity.Client;
-import ru.neoflex.deal.entity.Statement;
-import ru.neoflex.deal.service.ClientService;
-import ru.neoflex.deal.service.CreditService;
-import ru.neoflex.deal.service.StatementService;
+import ru.neoflex.deal.controller.dto.*;
+import ru.neoflex.deal.mapper.ClientMapper;
+import ru.neoflex.deal.mapper.ScoringMapper;
+import ru.neoflex.deal.mapper.StatementMapper;
+import ru.neoflex.deal.model.ClientEntity;
+import ru.neoflex.deal.model.LoanOffer;
+import ru.neoflex.deal.model.StatementEntity;
+import ru.neoflex.deal.service.*;
+import ru.neoflex.deal.service.command.CreditCommand;
+import ru.neoflex.deal.service.command.LoanStatementRequestCommand;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,82 +30,49 @@ public class DealController {
     private final ClientService clientService;
     private final StatementService statementService;
     private final CreditService creditService;
+    private final ScoringService scoringService;
 
-    private final RestClient restClient;
+    private final ClientMapper clientMapper;
+    private final StatementMapper statementMapper;
+    private final ScoringMapper scoringMapper;
+
+    private final OfferService offerService;
 
     @PostMapping("/statement")
     public ResponseEntity<List<LoanOfferDto>> getLoanOffers(@RequestBody @Valid LoanStatementRequestDto request) {
 
-        Client newClient = clientService.createClient(request);
+        ClientEntity newClient = clientService.createClient(clientMapper.toClientEntity(request));
 
-        Statement newStatement = statementService.createStatement(newClient);
+        LoanStatementRequestCommand command = statementMapper.toLoanStatementRequestCommand(request);
 
-        List<LoanOfferDto> offers = restClient
-                .post()
-                .uri("/calculator/offers")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(request)
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+        StatementEntity newStatement = statementService.createStatement(newClient);
 
-        assert offers != null;
-        // System.out.println(newStatement.getStatementId());
-        offers.forEach(offer -> offer.setStatementId(newStatement.getStatementId()));
+        List<LoanOfferDto> offers = offerService.getLoanOffers(command, newStatement.getStatementId());
 
         return ResponseEntity.ok(offers);
     }
 
     @PostMapping("/offer/select")
-    public ResponseEntity<Void> selectOffer(@RequestBody @Valid LoanOfferDto request) {
+    public void selectOffer(@RequestBody @Valid LoanOfferDto request) {
 
-        statementService.updateStatement(request);
+        LoanOffer loanOffer = statementMapper.toLoanOffer(request);
 
-        return ResponseEntity.ok().build();
+        statementService.updateStatement(loanOffer);
+
     }
 
     @PostMapping("/calculate/{statementId}")
-    public ResponseEntity<Void> createCredit(@RequestBody @Valid FinishRegistrationRequestDto request,
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createCredit(@RequestBody @Valid FinishRegistrationRequestDto request,
                                              @PathVariable String statementId) {
 
-        Statement statement = statementService.getStatementByStatementId(UUID.fromString(statementId));
+        StatementEntity statementEntity = statementService.getStatementByStatementId(UUID.fromString(statementId));
 
-        Client client = statement.getClient();
+        ScoringDataDto scoringData = scoringMapper.toScoringData(request, statementEntity);
 
-        ScoringDataDto scoringDataDto = ScoringDataDto
-                .builder()
-                .amount(statement.getAppliedOffer().getTotalAmount())
-                .term(statement.getAppliedOffer().getTerm())
-                .firstName(client.getFirstName())
-                .lastName(client.getLastName())
-                .middleName(client.getMiddleName())
-                .gender(request.getGender())
-                .birthdate(client.getBirthDate())
-                .passportSeries(client.getPassport().getSeries())
-                .passportNumber(client.getPassport().getNumber())
-                .passportIssueDate(request.getPassportIssueDate())
-                .passportIssueBranch(request.getPassportIssueBranch())
-                .maritalStatus(request.getMaritalStatus())
-                .dependentAmount(request.getDependentAmount())
-                .employment(request.getEmployment())
-                .accountNumber(request.getAccountNumber())
-                .isInsuranceEnabled(statement.getAppliedOffer().getIsInsuranceEnabled())
-                .isSalaryClient(statement.getAppliedOffer().getIsSalaryClient())
-                .build();
+        CreditCommand creditCommand = scoringService.getCredit(scoringMapper.toScoringDataCommand(scoringData));
 
-        CreditDto creditDto = restClient
-                .post()
-                .uri("/calculator/calc")
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(scoringDataDto)
-                .retrieve()
-                .body(new ParameterizedTypeReference<>() {
-                });
+        creditService.createCredit(creditCommand);
 
-        assert creditDto != null;
-
-        creditService.createCredit(creditDto);
-
-        return ResponseEntity.ok().build();
     }
 }

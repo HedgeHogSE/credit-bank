@@ -11,7 +11,6 @@ public class DealConfig {
     public RestClient restClient() {
         return RestClient.builder()
                 .baseUrl("http://localhost:8080")
-                .defaultHeader("Authorization", "Bearer token")
                 .build();
     }
 }

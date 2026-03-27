@@ -1,4 +1,4 @@
-package ru.neoflex.deal.dto;
+package ru.neoflex.deal.controller.dto;
 
 import lombok.Builder;
 import lombok.Data;

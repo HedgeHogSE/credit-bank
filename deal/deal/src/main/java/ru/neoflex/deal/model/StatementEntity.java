@@ -1,18 +1,16 @@
-package ru.neoflex.deal.entity;
+package ru.neoflex.deal.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import ru.neoflex.deal.dto.LoanOfferDto;
 import ru.neoflex.deal.enums.ApplicationStatus;
-import ru.neoflex.deal.json.StatusHistory;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -22,7 +20,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Statement {
+public class StatementEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "statement_id")
@@ -30,11 +28,11 @@ public class Statement {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
-    private Client client;
+    private ClientEntity clientEntity;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "credit_id", referencedColumnName = "credit_id")
-    private Credit credit;
+    private CreditEntity creditEntity;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -45,7 +43,7 @@ public class Statement {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "applied_offer")
-    private LoanOfferDto appliedOffer;
+    private LoanOffer appliedOffer;
 
     @Column(name = "sign_date")
     private LocalDateTime signDate;
@@ -53,7 +51,8 @@ public class Statement {
     @Column(name = "ses_code")
     private String sesCode;
 
+    @Builder.Default
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "status_history")
-    private List<StatusHistory> statusHistory;
+    private List<StatusHistory> statusHistory = new ArrayList<>();
 }

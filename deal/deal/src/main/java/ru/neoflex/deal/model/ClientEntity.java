@@ -1,7 +1,6 @@
-package ru.neoflex.deal.entity;
+package ru.neoflex.deal.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,8 +9,6 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import ru.neoflex.deal.enums.Gender;
 import ru.neoflex.deal.enums.MaritalStatus;
-import ru.neoflex.deal.json.Employment;
-import ru.neoflex.deal.json.Passport;
 
 import java.time.LocalDate;
 import java.util.UUID;
@@ -22,7 +19,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Client {
+public class ClientEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "client_id")

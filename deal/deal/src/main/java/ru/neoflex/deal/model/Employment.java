@@ -1,4 +1,4 @@
-package ru.neoflex.deal.json;
+package ru.neoflex.deal.model;
 
 import lombok.Data;
 import ru.neoflex.deal.enums.EmploymentPosition;
