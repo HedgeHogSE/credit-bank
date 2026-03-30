@@ -1,4 +1,4 @@
-package ru.neoflex.deal.enums;
+package ru.neoflex.deal.dictionary;
 
 public enum EmploymentStatus {
     UNEMPLOYED,

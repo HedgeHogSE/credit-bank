@@ -2,8 +2,8 @@ package ru.neoflex.deal.controller.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.deal.enums.Gender;
-import ru.neoflex.deal.enums.MaritalStatus;
+import ru.neoflex.deal.dictionary.Gender;
+import ru.neoflex.deal.dictionary.MaritalStatus;
 
 import java.time.LocalDate;
 

@@ -16,7 +16,7 @@ public class ScoringService {
 
     public CreditCommand getCredit(ScoringDataCommand scoringDataCommand) {
 
-        CreditCommand creditCommand = restClient
+        return restClient
                 .post()
                 .uri("/calculator/calc")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -24,7 +24,5 @@ public class ScoringService {
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
-
-        return (creditCommand == null) ? new CreditCommand() : creditCommand;
     }
 }

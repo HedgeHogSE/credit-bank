@@ -2,11 +2,13 @@ package ru.neoflex.deal.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.neoflex.deal.model.ClientEntity;
 import ru.neoflex.deal.repository.ClientRepository;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class ClientService {
 
     private final ClientRepository clientRepository;

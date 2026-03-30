@@ -3,12 +3,12 @@ package ru.neoflex.deal.service;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.neoflex.deal.controller.dto.LoanOfferDto;
+import org.springframework.transaction.annotation.Transactional;
 import ru.neoflex.deal.model.ClientEntity;
 import ru.neoflex.deal.model.LoanOffer;
 import ru.neoflex.deal.model.StatementEntity;
-import ru.neoflex.deal.enums.ApplicationStatus;
-import ru.neoflex.deal.enums.ChangeType;
+import ru.neoflex.deal.dictionary.ApplicationStatus;
+import ru.neoflex.deal.dictionary.ChangeType;
 import ru.neoflex.deal.model.StatusHistory;
 import ru.neoflex.deal.repository.StatementRepository;
 
@@ -17,6 +17,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class StatementService {
 
     private final StatementRepository statementRepository;
@@ -36,18 +37,7 @@ public class StatementService {
         return statementRepository.save(statementEntity);
     }
 
-    public StatementEntity createStatementByStatement(StatementEntity statementEntity) {
-
-        ApplicationStatus newStatus = ApplicationStatus.PREAPPROVAL;
-
-        statementEntity.setStatus(newStatus);
-
-        addStatus(statementEntity, newStatus);
-
-        return statementRepository.save(statementEntity);
-    }
-
-    public StatementEntity updateStatement(LoanOffer loanOffer) {
+    public void updateStatement(LoanOffer loanOffer) {
 
         StatementEntity statementEntity = getStatementByStatementId(loanOffer.getStatementId());
 
@@ -59,9 +49,10 @@ public class StatementService {
 
         addStatus(statementEntity, newStatus);
 
-        return statementRepository.save(statementEntity);
+        statementRepository.save(statementEntity);
     }
 
+    @Transactional(readOnly = true)
     public StatementEntity getStatementByStatementId(UUID statementId) {
 
         return statementRepository.getStatementByStatementId(statementId)

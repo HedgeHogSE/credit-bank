@@ -2,14 +2,15 @@ package ru.neoflex.deal.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.neoflex.deal.controller.dto.CreditDto;
+import org.springframework.transaction.annotation.Transactional;
 import ru.neoflex.deal.model.CreditEntity;
-import ru.neoflex.deal.enums.CreditStatus;
+import ru.neoflex.deal.dictionary.CreditStatus;
 import ru.neoflex.deal.repository.CreditRepository;
 import ru.neoflex.deal.service.command.CreditCommand;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CreditService {
 
     private final CreditRepository creditRepository;

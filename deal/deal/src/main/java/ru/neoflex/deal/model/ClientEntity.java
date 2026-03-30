@@ -7,8 +7,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import ru.neoflex.deal.enums.Gender;
-import ru.neoflex.deal.enums.MaritalStatus;
+import ru.neoflex.deal.dictionary.Gender;
+import ru.neoflex.deal.dictionary.MaritalStatus;
 
 import java.time.LocalDate;
 import java.util.UUID;

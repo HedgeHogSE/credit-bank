@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import ru.neoflex.deal.controller.dto.LoanOfferDto;
 import ru.neoflex.deal.controller.dto.LoanStatementRequestDto;
@@ -21,22 +22,16 @@ public class OfferService {
 
     private final RestClient restClient;
 
-    private final StatementMapper statementMapper;
-
     public List<LoanOfferDto> getLoanOffers(LoanStatementRequestCommand statement, UUID statementId) {
-
-        LoanStatementRequestDto request = statementMapper.toLoanStatementRequestDto(statement);
 
         List<LoanOfferDto> list = restClient
                 .post()
                 .uri("/calculator/offers")
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(request)
+                .body(statement)
                 .retrieve()
                 .body(new ParameterizedTypeReference<>() {
                 });
-
-        list = (list == null) ? new ArrayList<>() : list;
 
         list.forEach(offer -> offer.setStatementId(statementId));
 
