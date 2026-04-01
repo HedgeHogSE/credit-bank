@@ -24,7 +24,6 @@ public class ApplicationProcessService {
     private final CreditService creditService;
 
     private final ScoringMapper scoringMapper;
-    private final ClientMapper clientMapper;
 
     @Transactional
     public StatementEntity registerNewClientAndStatement(ClientEntity clientEntity) {

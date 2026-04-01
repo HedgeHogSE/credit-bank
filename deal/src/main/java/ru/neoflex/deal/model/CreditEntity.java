@@ -1,6 +1,7 @@
 package ru.neoflex.deal.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -26,31 +27,40 @@ public class CreditEntity {
     private UUID creditId;
 
     @Column(name = "amount")
+    @NotNull
     private BigDecimal amount;
 
     @Column(name = "term")
+    @NotNull
     private Integer term;
 
     @Column(name = "monthly_payment")
+    @NotNull
     private BigDecimal monthlyPayment;
 
     @Column(name = "rate")
+    @NotNull
     private BigDecimal rate;
 
     @Column(name = "psk")
+    @NotNull
     private BigDecimal psk;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "payment_schedule")
+    @NotNull
     private List<PaymentSchedule> paymentSchedule;
 
     @Column(name = "insurance_enabled")
+    @NotNull
     private Boolean insuranceEnabled;
 
     @Column(name = "salary_client")
+    @NotNull
     private Boolean salaryClient;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "credit_status")
+    @NotNull
     private CreditStatus creditStatus;
 }

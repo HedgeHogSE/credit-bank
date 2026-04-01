@@ -2,12 +2,9 @@ package ru.neoflex.deal.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestClient;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -15,13 +12,10 @@ import ru.neoflex.deal.controller.dto.*;
 import ru.neoflex.deal.mapper.ClientMapper;
 import ru.neoflex.deal.mapper.ScoringMapper;
 import ru.neoflex.deal.mapper.StatementMapper;
-import ru.neoflex.deal.model.ClientEntity;
 import ru.neoflex.deal.model.LoanOffer;
 import ru.neoflex.deal.model.StatementEntity;
 import ru.neoflex.deal.service.*;
-import ru.neoflex.deal.service.command.CreditCommand;
 import ru.neoflex.deal.service.command.LoanStatementRequestCommand;
-import ru.neoflex.deal.service.command.ScoringDataCommand;
 
 import java.util.List;
 import java.util.UUID;
@@ -33,10 +27,7 @@ import java.util.UUID;
 @Tag(name = "Сделка", description = "Управление заявками на кредит")
 public class DealController {
 
-    private final ClientService clientService;
     private final StatementService statementService;
-    private final CreditService creditService;
-    private final ScoringService scoringService;
     private final ApplicationProcessService applicationProcessService;
 
     private final ClientMapper clientMapper;
@@ -79,6 +70,10 @@ public class DealController {
 
         log.info("POST /deal/calculate statementId={}", statementId);
 
+        // учитывая, что в FinishRegistrationRequestDto есть инфа,
+        // чтобы обновить данные о пользователе
+        // (именно тут узнали гендер, семейное положение и тд),
+        // то может где-то примерно на этом этапе в сервисе обновить эти самые данные пользователя?
         applicationProcessService.completeRegistration(scoringMapper.toFinishRegistrationRequestCommand(request), statementId);
 
     }

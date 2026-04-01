@@ -1,10 +1,12 @@
 package ru.neoflex.deal.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import ru.neoflex.deal.dictionary.ApplicationStatus;
@@ -20,6 +22,7 @@ import java.util.UUID;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
 public class StatementEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,6 +31,7 @@ public class StatementEntity {
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
+    @NotNull
     private ClientEntity clientEntity;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -36,6 +40,7 @@ public class StatementEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
+    @NotNull
     private ApplicationStatus status;
 
     @Column(name = "creation_date")
@@ -54,5 +59,6 @@ public class StatementEntity {
     @Builder.Default
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "status_history")
+    @NotNull
     private List<StatusHistory> statusHistory = new ArrayList<>();
 }

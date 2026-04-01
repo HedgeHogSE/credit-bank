@@ -1,7 +1,6 @@
 package ru.neoflex.calculator.service;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,10 +11,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ru.neoflex.calculator.config.CreditProperties;
 import ru.neoflex.calculator.dto.EmploymentDto;
 import ru.neoflex.calculator.dto.ScoringDataDto;
-import ru.neoflex.calculator.enums.EmploymentStatus;
-import ru.neoflex.calculator.enums.Gender;
-import ru.neoflex.calculator.enums.MaritalStatus;
-import ru.neoflex.calculator.enums.Position;
+import ru.neoflex.calculator.dictionary.EmploymentStatus;
+import ru.neoflex.calculator.dictionary.Gender;
+import ru.neoflex.calculator.dictionary.MaritalStatus;
+import ru.neoflex.calculator.dictionary.Position;
 import ru.neoflex.calculator.exception.ScoringException;
 import ru.neoflex.calculator.generator.DateNowGenerator;
 
