@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: calculator
+
+server:
+  port: 8080
+
+credit:
+  calculator:
+    base-rate: 0.15
+    insurance-cost: 100000

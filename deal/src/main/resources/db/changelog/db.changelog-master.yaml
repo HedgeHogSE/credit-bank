@@ -1,0 +1,5 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/v1.0/01-init-db.sql
+  - include:
+      file: db/changelog/v1.0/02-add-cascade-delete.sql
