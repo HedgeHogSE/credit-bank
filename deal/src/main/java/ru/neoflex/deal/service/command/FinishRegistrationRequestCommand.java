@@ -5,6 +5,7 @@ import lombok.Data;
 import ru.neoflex.deal.controller.dto.EmploymentDto;
 import ru.neoflex.deal.dictionary.Gender;
 import ru.neoflex.deal.dictionary.MaritalStatus;
+import ru.neoflex.deal.model.Employment;
 
 import java.time.LocalDate;
 
@@ -22,7 +23,7 @@ public class FinishRegistrationRequestCommand {
 
     private String passportIssueBranch;
 
-    private EmploymentDto employment;
+    private Employment employment;
 
     private String accountNumber;
 }

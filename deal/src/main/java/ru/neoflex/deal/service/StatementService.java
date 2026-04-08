@@ -46,6 +46,11 @@ public class StatementService {
 
         StatementEntity statementEntity = getStatementByStatementId(loanOffer.getStatementId());
 
+        if (statementEntity.getStatus() == ApplicationStatus.APPROVED) {
+            log.info("Statement is already approved, skipping update");
+            return;
+        }
+
         statementEntity.setAppliedOffer(loanOffer);
 
         ApplicationStatus newStatus = ApplicationStatus.APPROVED;
