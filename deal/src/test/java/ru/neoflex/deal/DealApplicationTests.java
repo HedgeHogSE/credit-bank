@@ -3,7 +3,6 @@ package ru.neoflex.deal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 import ru.neoflex.deal.dictionary.ApplicationStatus;
@@ -70,7 +69,14 @@ class DealApplicationTests {
 		long startTime = System.currentTimeMillis();
 
 		Thread t1 = new Thread(() -> statementService.updateStatement(loanOffer));
-		Thread t2 = new Thread(() -> statementService.updateStatement(loanOffer));
+		Thread t2 = new Thread(() -> {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            statementService.updateStatement(loanOffer);
+		});
 
 		t1.start();
 		t2.start();
@@ -79,7 +85,7 @@ class DealApplicationTests {
 		t2.join();
 
 		long duration = System.currentTimeMillis() - startTime;
-		System.out.println("Общее время выполнения: " + duration + " ms");
+		// System.out.println("Общее время выполнения: " + duration + " ms");
 
 		assertTrue(duration >= 2000);
 

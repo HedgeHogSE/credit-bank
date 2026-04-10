@@ -13,5 +13,5 @@ import java.util.UUID;
 public interface StatementRepository extends JpaRepository<StatementEntity, UUID> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    Optional<StatementEntity> getStatementByStatementId(UUID statementId);
+    Optional<StatementEntity> findByStatementId(UUID statementId);
 }
