@@ -64,7 +64,7 @@ public class StatementService {
 
     public StatementEntity getStatementByStatementId(UUID statementId) {
 
-        return statementRepository.getStatementByStatementId(statementId)
+        return statementRepository.findByStatementId(statementId)
                 .orElseThrow(()-> new EntityNotFoundException("Statement with id " + statementId + " not found"));
     }
 
