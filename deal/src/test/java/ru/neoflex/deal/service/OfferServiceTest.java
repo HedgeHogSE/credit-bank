@@ -1,6 +1,7 @@
 package ru.neoflex.deal.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.client.RestClientTest;
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,6 +19,7 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientResponseException;
 import ru.neoflex.deal.controller.dto.LoanOfferDto;
 import ru.neoflex.deal.controller.dto.LoanStatementRequestDto;
+import ru.neoflex.deal.exception.GlobalExceptionHandler;
 import ru.neoflex.deal.mapper.StatementMapper;
 import ru.neoflex.deal.service.command.LoanStatementRequestCommand;
 
@@ -33,6 +36,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 @RestClientTest(OfferService.class)
+@Import(GlobalExceptionHandler.class)
 public class OfferServiceTest {
 
     @Autowired

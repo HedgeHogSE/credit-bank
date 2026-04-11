@@ -1,4 +1,4 @@
-package ru.neoflex.deal.service;
+package ru.neoflex.statement.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
@@ -11,24 +11,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.client.RestClientResponseException;
-import ru.neoflex.deal.service.command.CreditCommand;
-import ru.neoflex.deal.service.command.ScoringDataCommand;
+import ru.neoflex.statement.controller.dto.LoanOfferDto;
+import ru.neoflex.statement.service.command.LoanOfferCommand;
+import ru.neoflex.statement.service.command.LoanStatementRequestCommand;
 
-import java.math.BigDecimal;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withStatus;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RestClientTest(ScoringService.class)
-public class ScoringServiceTest {
+@RestClientTest(OfferService.class)
+public class OfferServiceTest {
 
     @Autowired
-    private ScoringService scoringService;
+    private OfferService offerService;
 
     @Autowired
     private MockRestServiceServer server;
@@ -45,35 +44,38 @@ public class ScoringServiceTest {
     }
 
     @Test
-    void getCreditShouldReturnCreditCommand() throws Exception {
+    void getLoanOffersShouldReturnListLoanOfferDto() throws Exception {
 
-        ScoringDataCommand scoringDataCommand = new ScoringDataCommand();
+        LoanStatementRequestCommand command = LoanStatementRequestCommand.builder().build();
 
-        CreditCommand creditCommand = CreditCommand.builder()
-                .amount(BigDecimal.valueOf(100000))
-                .build();
+        List<LoanOfferDto> response = List.of(
+                LoanOfferDto.builder().build(),
+                LoanOfferDto.builder().build(),
+                LoanOfferDto.builder().build(),
+                LoanOfferDto.builder().build()
+        );
 
-        server.expect(requestTo("/calculator/calc"))
+        server.expect(requestTo("/deal/statement"))
                 .andExpect(method(HttpMethod.POST))
-                .andRespond(withSuccess(objectMapper.writeValueAsString(creditCommand), MediaType.APPLICATION_JSON));
+                .andRespond(withSuccess(objectMapper.writeValueAsString(response), MediaType.APPLICATION_JSON));
 
-        CreditCommand result = scoringService.getCredit(scoringDataCommand);
+        List<LoanOfferDto> result = offerService.getLoanOffers(command);
 
-        assertEquals(creditCommand.getAmount(), result.getAmount());
+        assertEquals(result.size(), response.size());
 
         server.verify();
     }
 
     @Test
-    void getCreditShouldThrowRestClientResponseException() {
+    void selectOfferShouldCorrectWork() throws Exception {
 
-        ScoringDataCommand scoringDataCommand = new ScoringDataCommand();
+        LoanOfferCommand command = LoanOfferCommand.builder().build();
 
-        server.expect(requestTo("/calculator/calc"))
+        server.expect(requestTo("/deal/offer/select"))
                 .andExpect(method(HttpMethod.POST))
-                .andRespond(withStatus(HttpStatus.INTERNAL_SERVER_ERROR));
+                .andRespond(withStatus(HttpStatus.OK));
 
-        assertThrows(RestClientResponseException.class, () -> scoringService.getCredit(scoringDataCommand));
+        offerService.selectOffer(command);
 
         server.verify();
     }
