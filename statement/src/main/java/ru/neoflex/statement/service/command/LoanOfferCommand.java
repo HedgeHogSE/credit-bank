@@ -2,11 +2,13 @@ package ru.neoflex.statement.service.command;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
+import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.UUID;
 
 @Builder
+@Data
 public class LoanOfferCommand {
 
     private UUID statementId;
