@@ -2,7 +2,6 @@ package ru.neoflex.deal.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.neoflex.deal.model.CreditEntity;
 import ru.neoflex.deal.dictionary.CreditStatus;
 import ru.neoflex.deal.repository.CreditRepository;
@@ -17,7 +16,7 @@ public class CreditService {
 
     private final CreditRepository creditRepository;
 
-    public void createCredit(CreditCommand creditCommand) {
+    public CreditEntity createCredit(CreditCommand creditCommand) {
         log.info("Creating credit with amount: {}", creditCommand.getAmount());
         CreditEntity creditEntity = CreditEntity
                 .builder()
@@ -32,6 +31,6 @@ public class CreditService {
                 .creditStatus(CreditStatus.CALCULATED)
                 .build();
 
-        creditRepository.save(creditEntity);
+       return creditRepository.save(creditEntity);
     }
 }

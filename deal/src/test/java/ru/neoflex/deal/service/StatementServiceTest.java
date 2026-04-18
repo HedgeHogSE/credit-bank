@@ -65,7 +65,7 @@ public class StatementServiceTest {
 
         StatementEntity statementEntity = new StatementEntity();
 
-        when(statementRepository.getStatementByStatementId(loanOffer.getStatementId())).thenReturn(Optional.of(statementEntity));
+        when(statementRepository.findByStatementId(loanOffer.getStatementId())).thenReturn(Optional.of(statementEntity));
 
         statementService.updateStatement(loanOffer);
 
@@ -84,7 +84,7 @@ public class StatementServiceTest {
         UUID statementId = UUID.randomUUID();
         StatementEntity statementEntity = StatementEntity.builder().statementId(statementId).build();
 
-        when(statementRepository.getStatementByStatementId(statementId)).thenReturn(Optional.of(statementEntity));
+        when(statementRepository.findByStatementId(statementId)).thenReturn(Optional.of(statementEntity));
 
         StatementEntity result = statementService.getStatementByStatementId(statementId);
 
@@ -97,7 +97,7 @@ public class StatementServiceTest {
 
         UUID statementId = UUID.randomUUID();
 
-        when(statementRepository.getStatementByStatementId(statementId))
+        when(statementRepository.findByStatementId(statementId))
                 .thenReturn(Optional.empty());
 
         assertThrows(EntityNotFoundException.class, () -> statementService.getStatementByStatementId(statementId));

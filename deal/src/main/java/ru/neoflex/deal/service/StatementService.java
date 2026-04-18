@@ -46,6 +46,11 @@ public class StatementService {
 
         StatementEntity statementEntity = getStatementByStatementId(loanOffer.getStatementId());
 
+        if (statementEntity.getStatus() == ApplicationStatus.APPROVED) {
+            log.info("Statement is already approved, skipping update");
+            return;
+        }
+
         statementEntity.setAppliedOffer(loanOffer);
 
         ApplicationStatus newStatus = ApplicationStatus.APPROVED;
@@ -59,7 +64,7 @@ public class StatementService {
 
     public StatementEntity getStatementByStatementId(UUID statementId) {
 
-        return statementRepository.getStatementByStatementId(statementId)
+        return statementRepository.findByStatementId(statementId)
                 .orElseThrow(()-> new EntityNotFoundException("Statement with id " + statementId + " not found"));
     }
 

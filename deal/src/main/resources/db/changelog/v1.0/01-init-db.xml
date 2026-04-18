@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.0.xsd">
+
+    <changeSet id="1-create-gender" author="HedgeHogSE">
+        <createTable tableName="gender">
+            <column name="gender" type="varchar(20)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="2-create-marital-status" author="HedgeHogSE">
+        <createTable tableName="marital_status">
+            <column name="marital_status" type="varchar(50)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3-create-application-status" author="HedgeHogSE">
+        <createTable tableName="application_status">
+            <column name="application_status" type="varchar(50)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4-create-credit-status" author="HedgeHogSE">
+        <createTable tableName="credit_status">
+            <column name="credit_status" type="varchar(20)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+
+    <changeSet id="5-create-client" author="HedgeHogSE">
+        <createTable tableName="client">
+            <column name="client_id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birth_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="email" type="varchar(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="gender" type="varchar(20)"/>
+            <column name="marital_status" type="varchar(50)"/>
+            <column name="dependent_amount" type="int"/>
+            <column name="passport" type="jsonb"/>
+            <column name="employment" type="jsonb"/>
+            <column name="account_number" type="varchar(200)"/>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="client"
+                columnNames="client_id"
+                constraintName="pk_client_id" />
+
+        <addForeignKeyConstraint
+                baseTableName="client"
+                baseColumnNames="gender"
+                referencedTableName="gender"
+                referencedColumnNames="gender"
+                constraintName="fk_client_gender"/>
+
+        <addForeignKeyConstraint
+                baseTableName="client"
+                baseColumnNames="marital_status"
+                referencedTableName="marital_status"
+                referencedColumnNames="marital_status"
+                constraintName="fk_client_marital_status"/>
+    </changeSet>
+
+    <changeSet id="6-create-credit" author="HedgeHogSE">
+        <createTable tableName="credit">
+            <column name="credit_id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="amount" type="DECIMAL(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="term" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="monthly_payment" type="DECIMAL(19,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rate" type="DECIMAL(5,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="psk" type="DECIMAL(5,2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment_schedule" type="jsonb">
+                <constraints nullable="false"/>
+            </column>
+            <column name="insurance_enabled" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="salary_client" type="BOOLEAN" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="credit_status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="credit"
+                columnNames="credit_id"
+                constraintName="pk_credit_id" />
+
+        <addForeignKeyConstraint
+                baseTableName="credit"
+                baseColumnNames="credit_status"
+                referencedTableName="credit_status"
+                referencedColumnNames="credit_status"
+                constraintName="fk_credit_status"/>
+    </changeSet>
+
+    <changeSet id="7-create-statement" author="HedgeHogSE">
+        <createTable tableName="statement">
+            <column name="statement_id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="credit_id" type="UUID"/>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="timestamp" defaultValueComputed="CURRENT_TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="applied_offer" type="jsonb"/>
+            <column name="sign_date" type="timestamp"/>
+            <column name="ses_code" type="varchar(200)"/>
+            <column name="status_history" type="jsonb">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addPrimaryKey
+                tableName="statement"
+                columnNames="statement_id"
+                constraintName="pk_statement_id" />
+
+        <addForeignKeyConstraint
+                baseTableName="statement"
+                baseColumnNames="client_id"
+                referencedTableName="client"
+                referencedColumnNames="client_id"
+                constraintName="fk_statement_client"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="statement"
+                baseColumnNames="credit_id"
+                referencedTableName="credit"
+                referencedColumnNames="credit_id"
+                constraintName="fk_statement_credit"
+                onDelete="CASCADE"/>
+
+        <addForeignKeyConstraint
+                baseTableName="statement"
+                baseColumnNames="status"
+                referencedTableName="application_status"
+                referencedColumnNames="application_status"
+                constraintName="fk_statement_status"/>
+    </changeSet>
+
+
+
+    <changeSet id="8-insert-gender" author="HedgeHogSE">
+        <insert tableName="gender">
+            <column name="gender" value="MALE"/>
+        </insert>
+        <insert tableName="gender">
+            <column name="gender" value="FEMALE"/>
+        </insert>
+    </changeSet>
+
+    <changeSet id="9-insert-marital-status" author="HedgeHogSE">
+        <insert tableName="marital_status"><column name="marital_status" value="MARRIED"/></insert>
+        <insert tableName="marital_status"><column name="marital_status" value="DIVORCED"/></insert>
+        <insert tableName="marital_status"><column name="marital_status" value="SINGLE"/></insert>
+        <insert tableName="marital_status"><column name="marital_status" value="WIDOWED"/></insert>
+    </changeSet>
+
+    <changeSet id="10-insert-application-status" author="HedgeHogSE">
+        <insert tableName="application_status"><column name="application_status" value="PREAPPROVAL"/></insert>
+        <insert tableName="application_status"><column name="application_status" value="APPROVED"/></insert>
+        <insert tableName="application_status"><column name="application_status" value="CC_DENIED"/></insert>
+        <insert tableName="application_status"><column name="application_status" value="CC_APPROVED"/></insert>
+        <insert tableName="application_status"><column name="application_status" value="PREPARE_DOCUMENTS"/></insert>
+        <insert tableName="application_status"><column name="application_status" value="DOCUMENT_SIGNED"/></insert>
+        <insert tableName="application_status"><column name="application_status" value="CLIENT_DENIED"/></insert>
+    </changeSet>
+
+    <changeSet id="11-insert-credit-status" author="HedgeHogSE">
+        <insert tableName="credit_status"><column name="credit_status" value="CALCULATED"/></insert>
+        <insert tableName="credit_status"><column name="credit_status" value="ISSUED"/></insert>
+    </changeSet>
+
+</databaseChangeLog>
