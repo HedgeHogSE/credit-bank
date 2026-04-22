@@ -3,8 +3,8 @@ package ru.neoflex.deal.controller.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.deal.dictionary.ApplicationStatus;
-import ru.neoflex.deal.dictionary.ChangeType;
+import ru.neoflex.deal.model.dictionary.ApplicationStatus;
+import ru.neoflex.deal.model.dictionary.ChangeType;
 
 import java.time.LocalDateTime;
 

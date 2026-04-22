@@ -211,6 +211,7 @@
         <insert tableName="application_status"><column name="application_status" value="CC_DENIED"/></insert>
         <insert tableName="application_status"><column name="application_status" value="CC_APPROVED"/></insert>
         <insert tableName="application_status"><column name="application_status" value="PREPARE_DOCUMENTS"/></insert>
+        <insert tableName="application_status"><column name="application_status" value="DOCUMENTS_CREATED"/></insert>
         <insert tableName="application_status"><column name="application_status" value="DOCUMENT_SIGNED"/></insert>
         <insert tableName="application_status"><column name="application_status" value="CLIENT_DENIED"/></insert>
     </changeSet>

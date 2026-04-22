@@ -3,8 +3,8 @@ package ru.neoflex.calculator.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.calculator.dictionary.EmploymentStatus;
-import ru.neoflex.calculator.dictionary.Position;
+import ru.neoflex.calculator.enums.EmploymentStatus;
+import ru.neoflex.calculator.enums.Position;
 
 import java.math.BigDecimal;
 

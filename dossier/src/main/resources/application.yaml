@@ -1,0 +1,40 @@
+spring:
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_SMTP_USERNAME}
+    password: ${GMAIL_SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+        debug: true
+  application:
+    name: dossier
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+    producer:
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.type.mapping: >
+          ru.neoflex.deal.controller.dto.EmailMessage:ru.neoflex.dossier.dto.EmailMessage
+    admin:
+      bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:29092}
+logging:
+  level:
+    org.springframework.mail: DEBUG
+    com.sun.mail: DEBUG
+    jakarta.mail: DEBUG
+server:
+  port: 8083
+

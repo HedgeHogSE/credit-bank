@@ -8,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import ru.neoflex.deal.dictionary.CreditStatus;
+import ru.neoflex.deal.model.dictionary.CreditStatus;
 
 import java.math.BigDecimal;
 import java.util.List;

@@ -11,6 +11,8 @@ temp/
 *.tmp
 *.swp
 
+.env
+
 ### Reports and Coverage ###
 coverage/
 jacoco.exec
