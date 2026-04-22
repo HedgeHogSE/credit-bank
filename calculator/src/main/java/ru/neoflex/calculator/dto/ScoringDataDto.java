@@ -3,8 +3,8 @@ package ru.neoflex.calculator.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.calculator.dictionary.Gender;
-import ru.neoflex.calculator.dictionary.MaritalStatus;
+import ru.neoflex.calculator.enums.Gender;
+import ru.neoflex.calculator.enums.MaritalStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

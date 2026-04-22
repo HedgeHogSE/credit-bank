@@ -1,0 +1,160 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: deal_db
+    environment:
+      POSTGRES_DB: deal_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  calculator:
+    build: 
+      context: ./calculator
+      dockerfile: Dockerfile
+    container_name: calculator_service
+    ports:
+      - "8080:8080"
+    restart: on-failure
+
+  deal:
+    build: 
+      context: ./deal
+      dockerfile: Dockerfile
+    container_name: deal_service
+    environment:
+      DEAL_CALCULATOR_URL: http://calculator:8080
+      DB_URL: jdbc:postgresql://deal_db:5432/deal_db
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    ports:
+      - "8081:8081"
+    depends_on:
+      db:
+        condition: service_started
+      calculator:
+        condition: service_started
+      kafka:
+        condition: service_started
+    restart: on-failure
+
+  statement:
+    build: 
+      context: ./statement
+      dockerfile: Dockerfile
+    container_name: statement_service
+    environment:
+      STATEMENT_DEAL_URL: http://deal:8081
+    ports:
+      - "8082:8082"
+    depends_on:
+      deal:
+        condition: service_started
+      kafka:
+        condition: service_started
+    restart: on-failure
+
+  dossier:
+    build:
+      context: ./dossier
+      dockerfile: Dockerfile
+    container_name: dossier_service
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      GMAIL_SMTP_USERNAME: ${GMAIL_SMTP_USERNAME}
+      GMAIL_SMTP_PASSWORD: ${GMAIL_SMTP_PASSWORD}
+    ports:
+      - "8083:8083"
+    restart: on-failure
+
+
+
+  victoriametrics:
+    image: victoriametrics/victoria-metrics:v1.116.0
+    container_name: victoriametrics
+    command:
+      - "--storageDataPath=/victoria-metrics-data"
+      - "--httpListenAddr=:8428"
+    ports:
+      - "8428:8428"
+    volumes:
+      - vmdata:/victoria-metrics-data
+    restart: unless-stopped
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.4.4
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - "22181:2181"
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "echo ruok | nc localhost 2181 | grep imok" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: confluentinc/cp-kafka:7.4.4
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,PLAINTEXT_HOST://0.0.0.0:29092
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    healthcheck:
+      test: [ "CMD", "bash", "-c", "unset" , "&&" , "exec", "3<>/dev/tcp/127.0.0.1/9092", "&&", "exec", "3<&-", "&&", "exec", "3>&-" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  vmagent:
+    image: victoriametrics/vmagent:v1.116.0
+    container_name: vmagent
+    environment:
+      DEAL_METRICS_TARGET: deal:8081
+    command:
+      - "--promscrape.config=/etc/prometheus/prometheus.yaml"
+      - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+    volumes:
+      - ./deal/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+    depends_on:
+      - deal
+      - victoriametrics
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:11.1.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    depends_on:
+      - victoriametrics
+    volumes:
+      - grafana-data:/var/lib/grafana
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  vmdata:
+  grafana-data:
