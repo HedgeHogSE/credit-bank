@@ -2,9 +2,8 @@ package ru.neoflex.deal.service.command;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.deal.controller.dto.EmploymentDto;
-import ru.neoflex.deal.dictionary.Gender;
-import ru.neoflex.deal.dictionary.MaritalStatus;
+import ru.neoflex.deal.model.dictionary.Gender;
+import ru.neoflex.deal.model.dictionary.MaritalStatus;
 import ru.neoflex.deal.model.Employment;
 
 import java.time.LocalDate;

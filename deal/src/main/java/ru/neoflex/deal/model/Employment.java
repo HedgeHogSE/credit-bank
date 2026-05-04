@@ -1,8 +1,8 @@
 package ru.neoflex.deal.model;
 
 import lombok.Data;
-import ru.neoflex.deal.dictionary.EmploymentPosition;
-import ru.neoflex.deal.dictionary.EmploymentStatus;
+import ru.neoflex.deal.model.dictionary.EmploymentPosition;
+import ru.neoflex.deal.model.dictionary.EmploymentStatus;
 
 import java.math.BigDecimal;
 

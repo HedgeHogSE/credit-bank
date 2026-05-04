@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
-import ru.neoflex.deal.dictionary.CreditStatus;
+import ru.neoflex.deal.model.dictionary.CreditStatus;
 import ru.neoflex.deal.model.CreditEntity;
 import ru.neoflex.deal.repository.CreditRepository;
 import ru.neoflex.deal.service.command.CreditCommand;

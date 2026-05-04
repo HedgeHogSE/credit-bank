@@ -7,8 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.neoflex.deal.model.ClientEntity;
 import ru.neoflex.deal.model.LoanOffer;
 import ru.neoflex.deal.model.StatementEntity;
-import ru.neoflex.deal.dictionary.ApplicationStatus;
-import ru.neoflex.deal.dictionary.ChangeType;
+import ru.neoflex.deal.model.dictionary.ApplicationStatus;
+import ru.neoflex.deal.model.dictionary.ChangeType;
 import ru.neoflex.deal.model.StatusHistory;
 import ru.neoflex.deal.repository.StatementRepository;
 
@@ -32,7 +32,6 @@ public class StatementService {
         StatementEntity statementEntity = StatementEntity
                 .builder()
                 .clientEntity(client)
-                .status(newStatus)
                 .build();
 
         addStatus(statementEntity, newStatus);
@@ -41,34 +40,35 @@ public class StatementService {
     }
 
     @Transactional
-    public void updateStatement(LoanOffer loanOffer) {
+    public StatementEntity updateStatement(LoanOffer loanOffer) {
         log.info("Updating statement {} with accepted offer", loanOffer.getStatementId());
 
         StatementEntity statementEntity = getStatementByStatementId(loanOffer.getStatementId());
 
         if (statementEntity.getStatus() == ApplicationStatus.APPROVED) {
             log.info("Statement is already approved, skipping update");
-            return;
+            return statementEntity;
         }
 
         statementEntity.setAppliedOffer(loanOffer);
 
         ApplicationStatus newStatus = ApplicationStatus.APPROVED;
 
-        statementEntity.setStatus(newStatus);
-
         addStatus(statementEntity, newStatus);
 
-        statementRepository.save(statementEntity);
+        return statementRepository.save(statementEntity);
     }
 
+    @Transactional
     public StatementEntity getStatementByStatementId(UUID statementId) {
 
         return statementRepository.findByStatementId(statementId)
                 .orElseThrow(()-> new EntityNotFoundException("Statement with id " + statementId + " not found"));
     }
 
-    private void addStatus(StatementEntity statement, ApplicationStatus status) {
+    public void addStatus(StatementEntity statement, ApplicationStatus status) {
+
+        statement.setStatus(status);
 
         StatusHistory historyRecord = StatusHistory.builder()
                 .status(status)

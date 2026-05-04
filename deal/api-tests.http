@@ -1,0 +1,68 @@
+
+### На этом этапе просто создаем client и statement со статусом PREAPPROVAL
+POST http://localhost:8081/deal/statement
+Content-Type: application/json
+
+{
+  "amount": 200000,
+  "term": 12,
+  "firstName": "Serega",
+  "lastName": "Suchkov",
+  "middleName": "Vladimirovich",
+  "email": "sasha.ezhak2006@gmail.com",
+  "birthDate": "2006-03-28",
+  "passportSeries": "1234",
+  "passportNumber": "567890"
+}
+
+### На этом этапе statement меняет статус на APPROVED (не забудьте поменять statementId)
+POST http://localhost:8081/deal/offer/select
+Content-Type: application/json
+
+{
+     "statementId": "4ada4773-05ea-46ad-ad43-46c3eee8ddc3",
+     "requestedAmount": 200000,
+     "totalAmount": 200000,
+     "term": 12,
+     "monthlyPayment": 18051.66,
+     "rate": 0.15,
+     "isInsuranceEnabled": false,
+    "isSalaryClient": false
+}
+
+### На этом этапе statement меняет статус на CC_APPROVED/CC_DENIED (в данном случае CC_APPROVED)
+POST http://localhost:8081/deal/calculate/4ada4773-05ea-46ad-ad43-46c3eee8ddc3
+Content-Type: application/json
+
+{
+  "gender": "MALE",
+  "maritalStatus": "MARRIED",
+  "dependentAmount": 1,
+  "passportIssueDate": "2020-05-15",
+  "passportIssueBranch": "770-001",
+  "accountNumber": "40817810500001234567",
+  "employment": {
+    "employmentStatus": "EMPLOYED",
+    "employerINN": "7777777777",
+    "salary": 90000,
+    "position": "WORKER",
+    "workExperienceTotal": 60,
+    "workExperienceCurrent": 24
+  }
+}
+
+### На этом этапе statement меняет статус на PREPARE_DOCUMENTS, а также на почту приходит сообщение
+POST http://localhost:8081/deal/document/4ada4773-05ea-46ad-ad43-46c3eee8ddc3/send
+Content-Type: application/json
+
+### На этом этапе statement меняет статус на DOCUMENTS_CREATED, а также на почту приходит сообщение с кодом
+POST http://localhost:8081/deal/document/4ada4773-05ea-46ad-ad43-46c3eee8ddc3/sign
+Content-Type: application/json
+
+### На этом этапе statement меняет статус на DOCUMENTS_SIGNED, а также на почту приходит сообщение (не забудьте поменять sesCode)
+POST http://localhost:8081/deal/document/4ada4773-05ea-46ad-ad43-46c3eee8ddc3/code
+Content-Type: application/json
+
+{
+  "sesCode": "1311"
+}

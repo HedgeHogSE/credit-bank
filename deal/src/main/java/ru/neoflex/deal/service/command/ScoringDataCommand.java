@@ -1,14 +1,13 @@
 package ru.neoflex.deal.service.command;
 
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.neoflex.deal.controller.dto.EmploymentDto;
-import ru.neoflex.deal.dictionary.Gender;
-import ru.neoflex.deal.dictionary.MaritalStatus;
+import ru.neoflex.deal.model.dictionary.Gender;
+import ru.neoflex.deal.model.dictionary.MaritalStatus;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

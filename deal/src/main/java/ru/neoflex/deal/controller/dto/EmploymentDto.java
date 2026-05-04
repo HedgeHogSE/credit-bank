@@ -3,8 +3,8 @@ package ru.neoflex.deal.controller.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.deal.dictionary.EmploymentPosition;
-import ru.neoflex.deal.dictionary.EmploymentStatus;
+import ru.neoflex.deal.model.dictionary.EmploymentPosition;
+import ru.neoflex.deal.model.dictionary.EmploymentStatus;
 
 import java.math.BigDecimal;
 

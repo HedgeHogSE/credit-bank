@@ -3,7 +3,7 @@ package ru.neoflex.deal.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.neoflex.deal.model.CreditEntity;
-import ru.neoflex.deal.dictionary.CreditStatus;
+import ru.neoflex.deal.model.dictionary.CreditStatus;
 import ru.neoflex.deal.repository.CreditRepository;
 import ru.neoflex.deal.service.command.CreditCommand;
 
