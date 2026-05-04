@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import ru.neoflex.deal.dictionary.ApplicationStatus;
+import ru.neoflex.deal.model.dictionary.ApplicationStatus;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

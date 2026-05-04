@@ -1,5 +1,6 @@
 package ru.neoflex.statement.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestClient;
@@ -7,7 +8,10 @@ import org.springframework.web.client.RestClient;
 import java.time.Clock;
 
 @Configuration
+@RequiredArgsConstructor
 public class StatementConfig {
+
+    private final StatementProperties statementProperties;
 
     @Bean
     public Clock clock() {
@@ -17,7 +21,7 @@ public class StatementConfig {
     @Bean
     public RestClient restClient() {
         return RestClient.builder()
-                .baseUrl("http://localhost:8081")
+                .baseUrl(statementProperties.getDealUrl())
                 .build();
     }
 }

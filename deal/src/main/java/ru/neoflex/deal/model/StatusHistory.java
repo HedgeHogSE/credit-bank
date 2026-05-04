@@ -2,8 +2,8 @@ package ru.neoflex.deal.model;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.deal.dictionary.ApplicationStatus;
-import ru.neoflex.deal.dictionary.ChangeType;
+import ru.neoflex.deal.model.dictionary.ApplicationStatus;
+import ru.neoflex.deal.model.dictionary.ChangeType;
 
 import java.time.LocalDateTime;
 

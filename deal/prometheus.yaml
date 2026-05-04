@@ -1,0 +1,5 @@
+scrape_configs:
+  - job_name: 'deal'
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: ['%{DEAL_METRICS_TARGET}']
