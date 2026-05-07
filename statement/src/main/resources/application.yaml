@@ -1,9 +1,13 @@
 spring:
   application:
-    name: deal
+    name: statement
 
 server:
   port: 8082
 
 statement:
-  deal-url: http://localhost:8081
+  deal-url: ${STATEMENT_DEAL_URL:http://localhost:8081}
+
+springdoc:
+  api-docs:
+    path: /statement/v3/api-docs

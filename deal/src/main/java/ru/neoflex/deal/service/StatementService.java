@@ -13,6 +13,7 @@ import ru.neoflex.deal.model.StatusHistory;
 import ru.neoflex.deal.repository.StatementRepository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.extern.slf4j.Slf4j;
@@ -77,5 +78,10 @@ public class StatementService {
                 .build();
 
         statement.getStatusHistory().add(historyRecord);
+    }
+
+    public List<StatementEntity> getAllStatements() {
+
+        return statementRepository.findAll();
     }
 }

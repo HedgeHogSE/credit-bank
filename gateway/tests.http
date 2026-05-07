@@ -1,0 +1,2 @@
+GET http://localhost:8084/deal/admin/statement
+Content-Type: application/json
