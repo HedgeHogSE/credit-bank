@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.neoflex.deal.controller.dto.StatementDto;
 import ru.neoflex.deal.mapper.StatementMapper;
-import ru.neoflex.deal.model.StatementEntity;
 import ru.neoflex.deal.service.StatementService;
 
 import java.util.List;
