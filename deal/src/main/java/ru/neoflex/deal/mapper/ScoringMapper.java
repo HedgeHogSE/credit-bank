@@ -5,7 +5,6 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import ru.neoflex.deal.controller.dto.FinishRegistrationRequestDto;
-import ru.neoflex.deal.controller.dto.ScoringDataDto;
 import ru.neoflex.deal.model.StatementEntity;
 import ru.neoflex.deal.service.command.FinishRegistrationRequestCommand;
 import ru.neoflex.deal.service.command.ScoringDataCommand;
@@ -33,5 +32,4 @@ public interface ScoringMapper {
 
     FinishRegistrationRequestCommand toFinishRegistrationRequestCommand(FinishRegistrationRequestDto requestDto);
 
-    //ScoringDataCommand toScoringDataCommand(ScoringDataDto scoringDataDto);
 }

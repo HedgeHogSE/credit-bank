@@ -1,9 +1,30 @@
 spring:
   application:
-    name: deal
+    name: statement
 
 server:
   port: 8082
 
 statement:
-  deal-url: http://localhost:8081
+  deal-url: ${STATEMENT_DEAL_URL:http://localhost:8081}
+
+springdoc:
+  api-docs:
+    path: /statement/v3/api-docs
+
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      minimumNumberOfCalls: 5
+      permittedNumberOfCallsInHalfOpenState: 3
+      automaticTransitionFromOpenToHalfOpenEnabled: true
+      waitDurationInOpenState: 5s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+  instances:
+    getLoanOffers:
+      baseConfig: default
+    selectOffer:
+      baseConfig: default

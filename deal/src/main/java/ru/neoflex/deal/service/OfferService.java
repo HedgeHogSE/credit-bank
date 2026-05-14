@@ -4,12 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestClient;
 import ru.neoflex.deal.controller.dto.LoanOfferDto;
-import ru.neoflex.deal.controller.dto.LoanStatementRequestDto;
-import ru.neoflex.deal.mapper.StatementMapper;
-import ru.neoflex.deal.model.StatementEntity;
 import ru.neoflex.deal.service.command.LoanStatementRequestCommand;
 
 import java.util.ArrayList;

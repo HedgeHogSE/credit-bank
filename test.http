@@ -1,0 +1,75 @@
+### На этом этапе просто создаем client и statement со статусом PREAPPROVAL, но перед этим делаем прескоринг
+POST http://localhost:8084/statement
+Content-Type: application/json
+
+{
+  "amount": 200000,
+  "term": 12,
+  "firstName": "Sasha",
+  "lastName": "Kireev",
+  "middleName": "Vladimirovich",
+  "email": "sasha.ezhak2006@gmail.com",
+  "birthDate": "2006-03-28",
+  "passportSeries": "1234",
+  "passportNumber": "567890"
+}
+
+### На этом этапе statement меняет статус на APPROVED (не забудьте поменять statementId)
+POST http://localhost:8084/statement/offer
+Content-Type: application/json
+
+{
+  "statementId": "7e718357-2106-4d16-b3d7-5daa4a4c32bd",
+  "requestedAmount": 200000,
+  "totalAmount": 200000,
+  "term": 12,
+  "monthlyPayment": 18051.66,
+  "rate": 0.15,
+  "isInsuranceEnabled": false,
+  "isSalaryClient": false
+}
+
+### На этом этапе statement меняет статус на CC_APPROVED/CC_DENIED (в данном случае CC_APPROVED)
+POST http://localhost:8084/deal/calculate/7e718357-2106-4d16-b3d7-5daa4a4c32bd
+Content-Type: application/json
+
+{
+  "gender": "MALE",
+  "maritalStatus": "MARRIED",
+  "dependentAmount": 1,
+  "passportIssueDate": "2020-05-15",
+  "passportIssueBranch": "770-001",
+  "accountNumber": "40817810500001234567",
+  "employment": {
+    "employmentStatus": "EMPLOYED",
+    "employerINN": "7777777777",
+    "salary": 90000,
+    "position": "WORKER",
+    "workExperienceTotal": 60,
+    "workExperienceCurrent": 24
+  }
+}
+
+### На этом этапе statement меняет статус на PREPARE_DOCUMENTS, а также на почту приходит сообщение
+POST http://localhost:8084/deal/document/7e718357-2106-4d16-b3d7-5daa4a4c32bd/send
+
+### На этом этапе statement меняет статус на DOCUMENTS_CREATED, а также на почту приходит сообщение с кодом
+POST http://localhost:8084/deal/document/7e718357-2106-4d16-b3d7-5daa4a4c32bd/sign
+
+### На этом этапе statement меняет статус на DOCUMENTS_SIGNED, а также на почту приходит сообщение (не забудьте поменять sesCode)
+POST http://localhost:8084/deal/document/7e718357-2106-4d16-b3d7-5daa4a4c32bd/code
+Content-Type: application/json
+
+{
+  "sesCode": "8749"
+}
+
+###
+
+GET http://localhost:8084/deal/admin/statement
+Authorization: Basic admin secret
+
+###
+
+GET http://localhost:8084/deal/admin/statement/2f5fe1b3-3f0f-4502-9acd-4456c9c16f36
+Authorization: Basic admin secret

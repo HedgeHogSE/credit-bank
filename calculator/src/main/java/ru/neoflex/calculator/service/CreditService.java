@@ -13,7 +13,6 @@ import ru.neoflex.calculator.util.CreditUtil;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.time.LocalDate.now;
 import static ru.neoflex.calculator.util.CreditUtil.getPaymentScheduleElements;
 import static ru.neoflex.calculator.util.CreditUtil.getPsk;
 

@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import ru.neoflex.deal.exception.ErrorResponse;
 import ru.neoflex.deal.exception.ScoringRejectedException;
 import ru.neoflex.deal.service.command.CreditCommand;
 import ru.neoflex.deal.service.command.ScoringDataCommand;

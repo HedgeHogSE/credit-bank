@@ -53,4 +53,19 @@ public class GlobalExceptionHandler {
                         "messages", errors
                 ));
     }
+
+    @ExceptionHandler(ExternalServiceException.class)
+    public ResponseEntity<Map<String, Object>> handleExternalServiceException(
+            ExternalServiceException ex
+    ) {
+
+        return ResponseEntity
+                .status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body(Map.of(
+                        "timestamp", LocalDateTime.now(),
+                        "error", "Service Unavailable",
+                        "status", 503,
+                        "message", ex.getMessage()
+                ));
+    }
 }

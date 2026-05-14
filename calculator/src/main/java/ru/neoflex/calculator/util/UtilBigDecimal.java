@@ -4,7 +4,7 @@ import java.math.BigDecimal;
 
 public class UtilBigDecimal {
 
-    public static boolean isGreaterThan (BigDecimal num1, BigDecimal num2) {
+    public static boolean isGreaterThan(BigDecimal num1, BigDecimal num2) {
         int val = num1.compareTo(num2);
         return val > 0;
     }

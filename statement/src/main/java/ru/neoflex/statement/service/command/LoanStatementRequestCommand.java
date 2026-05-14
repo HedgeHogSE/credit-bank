@@ -1,10 +1,7 @@
 package ru.neoflex.statement.service.command;
 
-import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.*;
 import lombok.Builder;
 import lombok.Data;
-import ru.neoflex.statement.validation.annotation.Adult;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

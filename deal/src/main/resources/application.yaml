@@ -26,11 +26,15 @@ spring:
       ddl-auto: none
     show-sql: true
 
+springdoc:
+  api-docs:
+    path: /deal/v3/api-docs
+
 server:
   port: 8081
 
 deal:
-  calculator-url: http://localhost:8080
+  calculator-url: ${DEAL_CALCULATOR_URL:http://localhost:8080}
 
 management:
   endpoints:
