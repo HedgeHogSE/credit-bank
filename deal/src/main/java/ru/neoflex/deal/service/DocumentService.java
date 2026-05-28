@@ -9,7 +9,7 @@ import ru.neoflex.deal.exception.SesException;
 import ru.neoflex.deal.model.StatementEntity;
 import ru.neoflex.deal.repository.StatementRepository;
 
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 @Service
@@ -100,7 +100,7 @@ public class DocumentService {
         int max = 9999;
         int min = 1000;
 
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
 
         return String.valueOf(random.nextInt(max - min + 1) + min);
     }
