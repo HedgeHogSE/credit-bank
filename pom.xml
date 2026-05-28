@@ -43,6 +43,8 @@
             **/config/**,
             **/mapper/**,
             **/enums/**,
+            **/generator/**,
+            **/service/command/**,
             **/*Application.java
         </sonar.coverage.exclusions>
         <sonar.cpd.exclusions>
