@@ -37,6 +37,21 @@
         <sonar.coverage.jacoco.xmlReportPaths>
             ${maven.multiModuleProjectDirectory}/**/target/site/jacoco/jacoco.xml
         </sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.exclusions>
+            **/dto/**,
+            **/model/**,
+            **/config/**,
+            **/mapper/**,
+            **/enums/**,
+            **/*Application.java
+        </sonar.coverage.exclusions>
+        <sonar.cpd.exclusions>
+            **/dto/**,
+            **/model/**,
+            **/config/**,
+            **/mapper/**,
+            **/enums/**,
+        </sonar.cpd.exclusions>
     </properties>
 
     <dependencyManagement>
